@@ -1,5 +1,5 @@
 from django.shortcuts import render
-import json
+from mainapp.models import Product, ProductCategory
 import datetime
 
 # Create your views here.
@@ -7,11 +7,12 @@ import datetime
 def index(request):
     return render(request, 'mainapp/index.html')
 
-def products(request):
-    with open('mainapp/fixtures/products.json', 'r', encoding='utf-8') as fh:
-        context = {
-            'title': datetime.datetime.now(),
-            'products': json.load(fh)
-        }
+def products(request, id=None):
+    print(id)
+    context = {
+        'title': datetime.datetime.now(),
+        'products': Product.objects.all(),
+        'categories': ProductCategory.objects.all(),
+    }
     return render(request, 'mainapp/products.html', context)
 
