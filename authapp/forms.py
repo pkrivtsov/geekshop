@@ -1,6 +1,10 @@
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
-from authapp.models import User
+from .models import User
 from django import forms
+
+import hashlib
+import random
+
 
 class UserLoginForm(AuthenticationForm):
     class Meta:
@@ -8,9 +12,9 @@ class UserLoginForm(AuthenticationForm):
         fields = ('username', 'password')
 
     def __init__(self, *args, **kwargs):
-        super(UserLoginForm, self).__init__(*args,**kwargs)
+        super(UserLoginForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['placeholder'] = 'Введите имя пользователя'
-        self.fields['username'].widget.attrs['placeholder'] = 'Введите пароль'
+        self.fields['password'].widget.attrs['placeholder'] = 'Введите пароль'
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
 
@@ -31,6 +35,15 @@ class UserRegisterForm(UserCreationForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
 
+    def save(self, commit=True):
+        user = super().save()
+        user.is_active = False
+        salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()
+        user.activation_key = hashlib.sha1(str(user.email + salt).encode('utf8')).hexdigest()
+        user.save()
+        return user
+
+
 class UserProfileForm(UserChangeForm):
     avatar = forms.ImageField(widget=forms.FileInput(), required=False)
 
@@ -45,7 +58,3 @@ class UserProfileForm(UserChangeForm):
         self.fields['username'].widget.attrs['readonly'] = True
         self.fields['email'].widget.attrs['readonly'] = True
         self.fields['avatar'].widget.attrs['class'] = 'custom-file-input'
-
-
-
-
