@@ -1,4 +1,6 @@
 {
   "EMAIL_HOST_USER": "почта@yandex.ru",
-  "EMAIL_HOST_PASSWORD" :  "пароль"
+  "EMAIL_HOST_PASSWORD" :  "пароль",
+  "SOCIAL_AUTH_FACEBOOK_KEY": "ID_приложения",
+  "SOCIAL_AUTH_FACEBOOK_SECRET": "Секрет_приложения"
 }
