@@ -158,16 +158,18 @@ EMAIL_USE_SSL = True
 
 LOGIN_ERROR_URL = '/'
 
-SOCIAL_AUTH_FACEBOOK_IGNORE_DEFAULT_SCOPE = True
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
-
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'social_core.backends.facebook.FacebookOAuth2',
 )
 
+
 SOCIAL_AUTH_FACEBOOK_KEY = ACS['SOCIAL_AUTH_FACEBOOK_KEY']
 SOCIAL_AUTH_FACEBOOK_SECRET = ACS['SOCIAL_AUTH_FACEBOOK_SECRET']
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'user_birthday', 'user_link']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {'fields': 'id, name, first_name, email, picture.type(large), link',}
+
+
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
