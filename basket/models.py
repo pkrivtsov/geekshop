@@ -1,7 +1,30 @@
 from django.db import models
 
+# from django.dispatch import receiver
+# from django.db.models.signals import pre_save
+
 from authapp.models import User
-from mainapp.models import  Product
+from mainapp.models import Product
+
+from datetime import timedelta
+from django.utils.timezone import now
+
+
+class BasketQuerySet(models.QuerySet):
+
+    def count_gt_2(self):
+        return self.filter(quantity_gt=2)
+
+    def count_lt_2(self):
+        return self.filter(quantity_lt=2)
+
+    def delete(self):
+        for object in self:
+            object.refresh_quantity()
+        super().delete()
+
+    def delete_old_baskets(self):
+        self.filter(created_timestamp_lt=now() - timedelta(hours=24)).delete()
 
 
 class Basket(models.Model):
@@ -9,6 +32,8 @@ class Basket(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
     created_timestamp = models.DateTimeField(auto_now_add=True)
+
+    objects = BasketQuerySet.as_manager()
 
     def __str__(self):
         return f'Корзина для {self.user.username} | Продукт {self.product.name}'
@@ -24,3 +49,29 @@ class Basket(models.Model):
         baskets = Basket.objects.filter(user=self.user)
         return sum(basket.sum() for basket in baskets)
 
+    def delete(self, using=None, keep_parents=False):
+        self.product.quantity += self.quantity
+        self.product.save()
+
+        super(self.__class__, self).delete()
+
+    def refresh_quantity(self):
+        if self.pk:
+            self.product.quantity -= self.quantity - Basket.objects.get(pk=self.pk).quantity
+        else:
+            self.product.quantity -= self.quantity
+        self.product.save()
+
+    def save(self, *args):
+        self.refresh_quantity()
+        super().save(*args)
+
+
+# @receiver(pre_save, sender=Basket)
+# def product_quantity_update(sender, update_fields, instance, **kwargs):
+#     print(update_fields, type(update_fields))
+#     if instance.pk:
+#         instance.product.quantity -= instance.quantity - instance.objects.get(pk=instance.pk).quantity
+#     else:
+#         instance.product.quantity -= instance.quantity
+#     instance.product.save()

@@ -1,5 +1,6 @@
 from basket.models import Basket
 
+
 def basket_count(request):
     user = request.user
     if user.is_authenticated:

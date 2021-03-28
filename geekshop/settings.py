@@ -142,7 +142,7 @@ AUTH_USER_MODEL = 'authapp.User'
 
 LOGIN_URL = '/auth/login/'
 
-with open('geekshop/access.json', 'r') as f:
+with open(os.path.join(BASE_DIR, 'geekshop', 'access.json'), 'r') as f:
     ACS = json.load(f)
 
 DOMAIN_NAME = 'http://localhost:8000'
