@@ -10,6 +10,7 @@ urlpatterns = [
    re_path(r'^create/$', ordersapp.OrderItemsCreate.as_view(), name='order_create'),
    re_path(r'^read/(?P<pk>\d+)/$', ordersapp.OrderRead.as_view(), name='order_read'),
    re_path(r'^update/(?P<pk>\d+)/$', ordersapp.OrderItemsUpdate.as_view(), name='order_update'),
+   re_path(r'^product/(?P<pk>\d+)/price/$', ordersapp.get_product_price),
    path('delete/<int:pk>/', ordersapp.OrderDelete.as_view(), name='order_delete'),
    path('test/', ordersapp.JustView.as_view(), name='test1'),
 ]
