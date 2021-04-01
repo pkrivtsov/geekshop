@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '^f$p)lcv7b)a9(3&vwyyf7xevo+_sp4-dt(@arqkq@gz+wcp!('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -147,12 +147,11 @@ with open(os.path.join(BASE_DIR, 'geekshop', 'access.json'), 'r') as f:
 
 DOMAIN_NAME = 'http://localhost:8000'
 
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = '465'
+EMAIL_HOST = 'sipnet.ru'
+EMAIL_PORT = '25'
 EMAIL_HOST_USER = ACS['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = ACS['EMAIL_HOST_PASSWORD']
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
+EMAIL_USE_TLS = True
 
 # EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 # EMAIL_FILE_PATH = 'tmp/email-messages/'
