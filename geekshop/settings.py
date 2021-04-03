@@ -61,6 +61,10 @@ MIDDLEWARE = [
 ]
 
 if DEBUG:
+    import mimetypes
+
+    mimetypes.add_type("application/javascript", ".js", True)
+
     def show_toolbar(request):
         return True
 
