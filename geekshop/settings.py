@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'social_django',
     'debug_toolbar',
     'template_profiler_panel',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -115,6 +116,8 @@ TEMPLATES = [
         },
     },
 ]
+
+SHELL_PLUS_PRINT_SQL = True
 
 WSGI_APPLICATION = 'geekshop.wsgi.application'
 
