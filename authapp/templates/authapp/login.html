@@ -9,11 +9,11 @@
                         <div class="col-lg-5">
                             {% if messages or form.non_field_errors %}
                                 <div class="alert
-                            {% if messages %} alert-success {% else %} alert-warning {% endif %}
+                                    {% if messages %} alert-success {% else %} alert-warning {% endif %}
                             alert-dismissible fade show"
                                      role="alert"
                                      style="margin-top: 50px;">
-                                    {% if message %}
+                                    {% if messages %}
                                         {% for message in messages %}
                                             {{ message }}
                                         {% endfor %}
@@ -54,6 +54,10 @@
                                 <div class="card-footer text-center">
                                     <div class="small"><a href="{% url 'auth:register' %}">Нужен аккаунт?
                                         Зарегистрируйся!</a></div>
+                                </div>
+                                <div class="card-footer text-center">
+                                    <div class="small"><a href="{% url 'social:begin' 'facebook' %}?next=/">Зайти через
+                                        FB</a></div>
                                 </div>
                             </div>
                         </div>

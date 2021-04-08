@@ -29,7 +29,7 @@ def products(request, category_id=None, page=1):
     per_page = 2
     paginator = Paginator(products, per_page)
     products_paginator = paginator.page(page)
-    context = {'title': datetime.datetime.now(), 'categories': ProductCategory.objects.all(),
+    context = {'title': datetime.datetime.now(), 'categories': ProductCategory.get_all(),
                'products': products_paginator}
     return render(request, 'mainapp/products.html', context)
     # try:

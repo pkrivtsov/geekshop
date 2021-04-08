@@ -1,4 +1,9 @@
 from django.db import models
+from django.conf import settings
+from django.core.cache import cache
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+
 
 class ProductCategory(models.Model):
     name = models.CharField(max_length=64,unique=True)
@@ -6,6 +11,19 @@ class ProductCategory(models.Model):
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def get_all(cls):
+        if settings.LOW_CACHE:
+            key = 'categories'
+            categories = cache.get(key)
+            if categories is None:
+                categories = cls.objects.all()
+                cache.set(key, categories)
+            return categories
+        else:
+            return cls.objects.all()
+
 
 class Product(models.Model):
     name = models.CharField(max_length=256)
@@ -18,5 +36,32 @@ class Product(models.Model):
 
     def __str__(self):
         return f'{self.name} | {self.category.name}'
+
+    @staticmethod
+    def get_items():
+        return Product.objects.filter(is_active=True).order_by('category', 'name')
+
+
+def db_profile_by_type(prefix, type, queries):
+    update_queries = list(filter(lambda x: type in x['sql'], queries))
+    print(f'db_profile {type} for {prefix}:')
+    [print(query['sql']) for query in update_queries]
+
+
+@receiver(pre_save, sender=ProductCategory)
+def product_is_active_update_productcategory_save(sender, instance, **kwargs):
+    # неэффективный вариант
+    # products = Product.objects.filter(category=instance).all()
+    # for pr in products:
+    #     pr.is_active = self.is_active
+    #     pr.save()
+
+    if instance.pk:
+        if instance.is_active:
+            instance.product_set.update(is_active=True)
+        else:
+            instance.product_set.update(is_active=False)
+
+        # db_profile_by_type(sender, 'UPDATE', connection.queries)
 
 
